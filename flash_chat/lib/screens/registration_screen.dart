@@ -14,27 +14,29 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String email;
-  String password;
-  bool showSpinner = false;
+  String _email;
+  String _password;
+  bool _showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
+        inAsyncCall: _showSpinner,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  height: 200.0,
-                  child: Image.asset('images/logo.png'),
+              Flexible(
+                child: Hero(
+                  tag: 'logo',
+                  child: Container(
+                    height: 200.0,
+                    child: Image.asset('images/logo.png'),
+                  ),
                 ),
               ),
               SizedBox(
@@ -46,7 +48,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
-                  email = value;
+                  _email = value;
                 },
               ),
               SizedBox(
@@ -58,7 +60,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 textAlign: TextAlign.center,
                 obscureText: true,
                 onChanged: (value) {
-                  password = value;
+                  _password = value;
                 },
               ),
               SizedBox(
@@ -68,21 +70,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 text: 'Register',
                 color: Colors.blueAccent,
                 onPressed: () async {
-                  setState(() => showSpinner = true);
+                  setState(() => _showSpinner = true);
+
                   try {
                     final FirebaseUser user =
                         (await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password))
+                                email: _email, password: _password))
                             .user;
 
                     if (user != null) {
-                      Navigator.pushNamed(context, ChatScreen.id);
+                      Navigator.popAndPushNamed(context, ChatScreen.id);
                     }
                   } catch (e) {
                     print(e);
                   }
 
-                  setState(() => showSpinner = false);
+                  setState(() => _showSpinner = false);
                 },
               ),
             ],
